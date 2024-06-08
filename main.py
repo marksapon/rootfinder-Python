@@ -319,10 +319,11 @@ def newton_raphson():
 
 # [4] Secant Method
 def secant():
-    os.system('cls')
-    print("[Secant Method]\n")
+    
     table = {'Xa': [], 'Xb': [], 'f(Xa)': [], 'f(Xb)': [], 'rel.error': []} # Table for storing the values
     iteration = 0
+    
+    os.system('cls')
 
     # Getting the equation from the user
     while True:

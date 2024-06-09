@@ -1,4 +1,5 @@
 import sympy as sympy
+from sympy import lambdify
 from tabulate import tabulate
 import os
 import math
@@ -87,7 +88,11 @@ def bisection():
 
         else:
             print("(Xl and Xr should have opposite signs)\n")
+    
+    expr = sympy.simplify(equation)
 
+    f = lambdify('x', expr, 'math')
+    
     precision_value = input("Enter the precision: ")
 
     # Set the precision value to user input or default value 5
@@ -123,13 +128,13 @@ def bisection():
         table['Xm'].append(math.ceil(((xl + xr) / 2) * 10**4) / 10**4)
 
         if (iteration == 0):
-            table['Yl'].append(math.ceil(sympy.sympify(equation).subs('x', xl) * 10**4) / 10**4)
-            table['Yr'].append(math.ceil(sympy.sympify(equation).subs('x', xr) * 10**4) / 10**4)
+            table['Yl'].append(math.ceil(f(xl) * 10**4) / 10**4)
+            table['Yr'].append(math.ceil(f(xr) * 10**4) / 10**4)
         else:
             table['Yl'].append(yl)
             table['Yr'].append(yr)
 
-        table['Ym'].append(math.ceil(sympy.sympify(equation).subs('x', table['Xm'][iteration]) * 10**4) / 10**4)
+        table['Ym'].append(math.ceil(f(table['Xm'][iteration]) * 10**4) / 10**4)
 
         [yl, yr] = comparison(xl, table['Xm'][iteration], xr, table['Yl'][iteration], table['Ym'][iteration], table['Yr'][iteration],  "y")
 
@@ -174,6 +179,10 @@ def false_position():
         else:
             print("(Xl and Xr should have opposite signs)\n")
 
+    expr = sympy.simplify(equation)
+
+    f = lambdify('x', expr, 'math')
+
     precision_value = input("Enter the precision: ")
 
     # Set the precision value to user input or default value 5
@@ -208,8 +217,8 @@ def false_position():
         table['Xr'].append(xr)
 
         if (iteration == 0):
-            yl = round(sympy.sympify(equation).subs('x', xl), 3)
-            yr = round(sympy.sympify(equation).subs('x', xr), 3)
+            yl = round(f(xl), 3)
+            yr = round(f(xr), 3)
             table['Yl'].append(yl)
             table['Yr'].append(yr)
 
@@ -219,11 +228,11 @@ def false_position():
 
         
         # table['Xm'].append(math.ceil(( xl + (xr-xl) * ( yl/(yl-yr) )) * 10**4) / 10**4)
-        xm = round(( xl + (xr-xl) * ( yl/(yl-yr) )), 5)
+        xm = (math.ceil(( xl + (xr-xl) * ( yl/(yl-yr) )) * 10**4) / 10**4)
         table['Xm'].append(xm)
 
         # ym = (sympy.sympify(equation).subs('x', table['Xm'][iteration]))
-        table['Ym'].append(math.ceil(sympy.sympify(equation).subs('x', table['Xm'][iteration]) * 10**4) / 10**4)
+        table['Ym'].append(math.ceil(f(table['Xm'][iteration]) * 10**4) / 10**4)
         # table['Ym'].append(round(ym,5))
 
         [yl, yr] = comparison(xl, table['Xm'][iteration], xr, table['Yl'][iteration], table['Ym'][iteration], table['Yr'][iteration],  "y")
@@ -259,12 +268,19 @@ def newton_raphson():
             os.system('cls')
             print("Invalid Input! Please try again.\n")
 
+    
+
     x_value = input("Enter the initial value of x: ")
     x_value = int(x_value) if x_value else 1
 
     x = sympy.symbols('x')
     parsed_equation = sympy.sympify(equation)
+
+    f = lambdify('x', parsed_equation, 'math')
+
     derivative = sympy.diff(parsed_equation, x)
+    
+    f_derivative = lambdify('x', derivative, 'math')
 
     print(f"\nThe derivative of {equation} is {derivative}")
 
@@ -292,10 +308,10 @@ def newton_raphson():
         table['X'].append(math.ceil(x_value * 10**4) / 10**4)
 
         print("% Computing f(x)...")
-        table['f(x)'].append(math.ceil(parsed_equation.subs('x', x_value) * 10**4) / 10**4)
+        table['f(x)'].append(math.ceil(f(x_value) * 10**4) / 10**4)
         
         print("% Computing f'(x)...")
-        table["f'(x)"].append(math.ceil(derivative.subs('x', x_value) * 10**4) / 10**4)
+        table["f'(x)"].append(math.ceil(f_derivative(x_value) * 10**4) / 10**4)
 
         print("Computing rel.error...")
         if iteration != 0:
@@ -303,7 +319,7 @@ def newton_raphson():
         else:
             table['rel.error'].append("")
         
-        x_value = x_value - (parsed_equation.subs('x', x_value) / derivative.subs('x', x_value))
+        x_value = x_value - (f(x_value) / f_derivative(x_value))
         iteration += 1
     
     os.system('cls')
@@ -335,6 +351,10 @@ def secant():
         except:
             os.system('cls')
             print("Invalid Input! Please try again.\n")
+    
+    expr = sympy.simplify(equation)
+
+    f = lambdify('x', expr, 'math')
 
     xa = int(input("Enter the initial value of Xa: "))
     xb = int(input("Enter the initial value of Xb: "))
@@ -367,21 +387,24 @@ def secant():
         table['Xb'].append(xb)
 
         print("% Computing f(Xa)...")
-        table['f(Xa)'].append(math.ceil(sympy.sympify(equation).subs('x', xa) * 10**4) / 10**4)
+        table['f(Xa)'].append(math.ceil(f(xa) * 10**4) / 10**4)
+        
 
         print("% Computing f(Xb)...")
-        table['f(Xb)'].append(math.ceil(sympy.sympify(equation).subs('x', xb) * 10**4) / 10**4)
+        table['f(Xb)'].append(math.ceil(f(xb) * 10**4) / 10**4)
         
 
         print("Computing rel.error...")
         if(iteration != 0): 
-            table['rel.error'].append(round(abs((table['Xb'][-2] - table['Xb'][-1]) / table['Xb'][-1]), 6))
+            table['rel.error'].append(round(abs((table['Xb'][-2] - table['Xb'][-1]) / table['Xb'][-1]), 3))
         else:
             table['rel.error'].append("")
 
         placeholder = xb
-        xb = xa - (table['f(Xa)'][-1] * (table['Xa'][-1] - table['Xb'][-1]) / (table['f(Xa)'][-1] - table['f(Xb)'][-1]))
-        print(f"xb: {xb}")
+        if (table['f(Xa)'][-1] - table['f(Xb)'][-1]) != 0:
+            xb = round(xa - (table['f(Xa)'][-1] * (table['Xa'][-1] - table['Xb'][-1]) / (table['f(Xa)'][-1] - table['f(Xb)'][-1])), 4)
+        else:
+            xb = 0
         xa = placeholder
         iteration += 1
 
@@ -389,8 +412,8 @@ def secant():
     displaylogo()
     print(tabulate(table, headers='keys', tablefmt='fancy_grid', showindex='always'))
 
-    print("Roots: ", float(table['Xb'][-1]))
-    print("f(x) : ", float(table['f(Xa)'][-1]))
+    print("Roots: ", round(float(table['Xb'][-1]), 4))
+    print("f(x) : ", round(float(table['f(Xa)'][-1]), 4))
 
     prompt()
 

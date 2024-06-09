@@ -80,8 +80,8 @@ def bisection():
 
 # Checking the value of Xl and Xr are valid
     while True:
-        xl = int(input("Enter the variable value Xl: ")) # Set Xl Value
-        xr = int(input("Enter the variable value Xr: ")) # Set Xr Value
+        xl = float(input("\nEnter the variable value Xl: ")) # Set Xl Value
+        xr = float(input("\nEnter the variable value Xr: ")) # Set Xr Value
 
         if (xl < xr or xl * xr < 0):
             break
@@ -93,13 +93,12 @@ def bisection():
 
     f = lambdify('x', expr, 'math')
     
-    precision_value = input("Enter the precision: ")
-
-    # Set the precision value to user input or default value 5
-    precision = float(precision_value) if precision_value else 0.1 
+    print('\nLess value = more precise')
+    precision_value = input("Enter the precision (Default is 0): ")
+    precision = float(precision_value) if precision_value else 0 
 
 # Halting Condition
-    def haltingCondition(iteration, precision):
+    def haltingCondition(precision):
         if len(table['Ym']) >= 2:
             diff = abs(table['Ym'][-2] - table['Ym'][-1])
             if diff <= precision:
@@ -121,7 +120,7 @@ def bisection():
                     return xm, xr
 
 # Operation
-    while haltingCondition(iteration, precision):
+    while haltingCondition(precision):
 
         table['Xl'].append(xl)
         table['Xr'].append(xr)
@@ -170,8 +169,8 @@ def false_position():
 
 # Checking the value of Xl and Xr are valid
     while True:
-        xl = int(input("Enter the variable value Xl: ")) # Set Xl Value
-        xr = int(input("Enter the variable value Xr: ")) # Set Xr Value
+        xl = float(input("\nEnter the variable value Xl: ")) # Set Xl Value
+        xr = float(input("\nEnter the variable value Xr: ")) # Set Xr Value
 
         if (xl < xr or xl * xr < 0):
             break
@@ -183,10 +182,9 @@ def false_position():
 
     f = lambdify('x', expr, 'math')
 
-    precision_value = input("Enter the precision: ")
-
-    # Set the precision value to user input or default value 5
-    precision = float(precision_value) if precision_value else 0.1 
+    print('\nLess value = more precise')
+    precision_value = input("Enter the precision (Default is 0): ")
+    precision = float(precision_value) if precision_value else 0 
 
 # Halting Condition
     def haltingCondition(precision):
@@ -262,7 +260,7 @@ def newton_raphson():
         try:
             print("[Newton Raphson Method]\n")
             inputFormat()
-            equation = input("Enter the f(x): ")
+            equation = input("\nEnter the f(x): ")
             break
         except:
             os.system('cls')
@@ -270,8 +268,12 @@ def newton_raphson():
 
     
 
-    x_value = input("Enter the initial value of x: ")
-    x_value = int(x_value) if x_value else 1
+    x_value = input("\nEnter the initial value of x: ")
+    x_value = float(x_value) if x_value else 1
+
+    print('\nLess value = more precise')
+    precision_value = input("Enter the precision (Default is 0): ")
+    precision = float(precision_value) if precision_value else 0
 
     x = sympy.symbols('x')
     parsed_equation = sympy.sympify(equation)
@@ -288,10 +290,10 @@ def newton_raphson():
 
     # Halting Condition
     def rel_error():
-        if len(table['rel.error']) != 0:
+        if len(table['rel.error']) > 1:
             # print(table['rel.error'][-1])
 
-            if table['rel.error'][-1] == 0:
+            if table['rel.error'][-1] == precision:
                 return False
             
             else:
@@ -356,15 +358,18 @@ def secant():
 
     f = lambdify('x', expr, 'math')
 
-    xa = int(input("Enter the initial value of Xa: "))
-    xb = int(input("Enter the initial value of Xb: "))
+    xa = float(input("\nEnter the initial value of Xa: "))
+    xb = float(input("\nEnter the initial value of Xb: "))
+
+    print('\nLess value = more precise')
+    precision_value = input("Enter the precision (Default is 0): ")
+    precision = float(precision_value) if precision_value else 0
 
     # Halting Condition
     def rel_error():
-        if len(table['rel.error']) != 0:
-            # print(table['rel.error'][-1])
+        if len(table['rel.error']) > 1:
 
-            if table['rel.error'][-1] == 0:
+            if table['rel.error'][-1] <= precision:
                 return False
             
             else:
@@ -375,9 +380,6 @@ def secant():
 
     # Operation
     while rel_error():
-        # if iteration == 5:
-        #     break
-
         print(f"\n[Iteration: {iteration}]")
 
         print("% Computing Xa...")

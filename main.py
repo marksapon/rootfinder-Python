@@ -50,12 +50,14 @@ def inputFormat():
     
 def displaylogo():
     print('''
-  _____             _     ______ _           _           
- |  __ \           | |   |  ____(_)         | |          
- | |__) |___   ___ | |_  | |__   _ _ __   __| | ___ _ __ 
- |  _  // _ \ / _ \| __| |  __| | | '_ \ / _` |/ _ \ '__|
- | | \ \ (_) | (_) | |_  | |    | | | | | (_| |  __/ |   
- |_|  \_\___/ \___/ \__| |_|    |_|_| |_|\__,_|\___|_|'''
+   _____             _   ______ _           _           
+ |  __ \           | | |  ____(_)         | |          
+ | |__) |___   ___ | |_| |__   _ _ __   __| | ___ _ __ 
+ |  _  // _ \ / _ \| __|  __| | | '_ \ / _` |/ _ \ '__|
+ | | \ \ (_) | (_) | |_| |    | | | | | (_| |  __/ |   
+ |_|  \_\___/ \___/ \__|_|    |_|_| |_|\__,_|\___|_|   
+                                                       
+          '''
               )
     
 
@@ -224,8 +226,7 @@ def false_position():
             table['Yl'].append(yl)
             table['Yr'].append(yr)
 
-        
-        # table['Xm'].append(math.ceil(( xl + (xr-xl) * ( yl/(yl-yr) )) * 10**4) / 10**4)
+    
         xm = (math.ceil(( xl + (xr-xl) * ( yl/(yl-yr) )) * 10**4) / 10**4)
         table['Xm'].append(xm)
 
@@ -274,6 +275,7 @@ def newton_raphson():
     print('\nLess value = more precise')
     precision_value = input("Enter the precision (Default is 0): ")
     precision = float(precision_value) if precision_value else 0
+    print(f'precision: {precision}')
 
     x = sympy.symbols('x')
     parsed_equation = sympy.sympify(equation)
@@ -291,9 +293,9 @@ def newton_raphson():
     # Halting Condition
     def rel_error():
         if len(table['rel.error']) > 1:
-            # print(table['rel.error'][-1])
+            print(table['rel.error'][-1])
 
-            if table['rel.error'][-1] == precision:
+            if table['rel.error'][-1] <= precision:
                 return False
             
             else:
@@ -317,7 +319,7 @@ def newton_raphson():
 
         print("Computing rel.error...")
         if iteration != 0:
-            table['rel.error'].append(round(abs((table['X'][-2] - table['X'][-1]) / table['X'][-1]), 6))
+            table['rel.error'].append((math.ceil(abs((table['X'][-2] - table['X'][-1]) / table['X'][-1]) * 10**4) / 10**4))
         else:
             table['rel.error'].append("")
         
@@ -398,7 +400,7 @@ def secant():
 
         print("Computing rel.error...")
         if(iteration != 0): 
-            table['rel.error'].append(round(abs((table['Xb'][-2] - table['Xb'][-1]) / table['Xb'][-1]), 3))
+            table['rel.error'].append((math.ceil(abs((table['Xb'][-2] - table['Xb'][-1]) / table['Xb'][-1]) * 10**4)) / 10**4)
         else:
             table['rel.error'].append("")
 
@@ -428,12 +430,14 @@ def Main():
     os.system('cls')
     while cont:
         displaylogo()
-        print('''
-Made by:
-- Mark Dharel A. Sapon
-- Rey Anthony M. De Luna
-- Bradley Jlord Pinpin
-              ''')
+        print('''+=======================================================+
+|                                                       |        
+|        Made by:                                       |
+|        - Mark Dharel A. Sapon                         |
+|        - Rey Anthony M. De Luna                       |
+|        - Bradley Jlord Pinpin                         |
+|                                                       |
++=======================================================+''')
 
         print('''
             [1] Bisection Method
